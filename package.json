@@ -1,7 +1,7 @@
 {
-  "name": "redux-easy",
-  "version": "2.8.0",
-  "description": "provides functions that make using Redux easier",
+  "name": "path-next",
+  "version": "1.0.0",
+  "description": "provides JavaScript functions for getting the next version of an object after making a change at a given path",
   "main": "lib/index.js",
   "scripts": {
     "build": "babel src -d lib",
@@ -16,22 +16,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mvolkmann/redux-easy.git"
+    "url": "git+https://github.com/mvolkmann/path-next.git"
   },
-  "keywords": [
-    "React",
-    "Redux",
-    "state"
-  ],
   "author": "R. Mark Volkmann <r.mark.volkmann@gmail.com> (http://mvolkmann.github.io)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mvolkmann/redux-easy/issues"
+    "url": "https://github.com/mvolkmann/path-next/issues"
   },
   "engines": {
     "node": ">= 8.0"
   },
-  "homepage": "https://github.com/mvolkmann/redux-easy#readme",
+  "homepage": "https://github.com/mvolkmann/path-next#readme",
   "jest": {
     "collectCoverage": true,
     "roots": [
@@ -39,29 +34,13 @@
     ],
     "verbose": true
   },
-  "dependencies": {
-    "lodash.throttle": "^4.1.1",
-    "prop-types": "^15.6.2",
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1",
-    "react-redux": "^5.0.7",
-    "redux": "^4.0.0"
-  },
-  "peerDependencies": {
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-eslint": "^8.2.5",
-    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
-    "eslint-plugin-react": "^7.10.0",
     "jest": "^23.4.0",
-    "lodash.clonedeep": "^4.5.0",
-    "prettier": "^1.13.7",
-    "redux-mock-store": "^1.5.3"
+    "prettier": "^1.13.7"
   }
 }
