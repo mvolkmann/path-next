@@ -46,11 +46,26 @@ describe('path-next', () => {
     expect(Object.isFrozen(obj.bar)).toBe(true);
   });
 
+  test('deepFreeze bad first argument', () => {
+    const msg = 'deepFreeze first argument must be an object';
+    expect(() => deepFreeze('bad')).toThrow(new Error(msg));
+  });
+
   test('deletePath', () => {
     const path = 'bar.baz';
     const newObj = deletePath(oldObj, path);
     const actual = getPathValue(newObj, path);
     expect(actual).toBeUndefined();
+  });
+
+  test('deletePath bad first argument', () => {
+    const msg = 'deletePath first argument must be an object';
+    expect(() => deletePath(false)).toThrow(new Error(msg));
+  });
+
+  test('deletePath bad second argument', () => {
+    const msg = 'deletePath second argument must be a path string';
+    expect(() => deletePath({}, false)).toThrow(new Error(msg));
   });
 
   test('filterPath', () => {
@@ -64,9 +79,19 @@ describe('path-next', () => {
     expect(actual).toEqual(['one']);
   });
 
-  test('filterPath passing non-function', () => {
+  test('filterPath bad first argument', () => {
+    const msg = 'filterPath first argument must be an object';
+    expect(() => filterPath(false)).toThrow(new Error(msg));
+  });
+
+  test('filterPath bad second argument', () => {
+    const msg = 'filterPath second argument must be a path string';
+    expect(() => filterPath({}, false)).toThrow(new Error(msg));
+  });
+
+  test('filterPath bad third argument', () => {
     const filterFn = 'This is not a function.';
-    const msg = 'filterPath must be passed a function';
+    const msg = 'filterPath third argument must be a function';
     expect(() => filterPath(oldObj, 'some.path', filterFn)).toThrow(
       new Error(msg)
     );
@@ -97,9 +122,18 @@ describe('path-next', () => {
     expect(actual).toBe(value);
   });
 
-  test('getPathValue with no path', () => {
-    const path = undefined;
-    expect(getPathValue(oldObj, path)).toBeUndefined();
+  test('getPathValue bad first argument', () => {
+    const msg = 'getPathValue first argument must be an object';
+    expect(() => getPathValue(false)).toThrow(new Error(msg));
+  });
+
+  test('getPathValue bad second argument', () => {
+    const msg = 'getPathValue second argument must be a path string';
+    expect(() => getPathValue({}, false)).toThrow(new Error(msg));
+  });
+
+  test('getPathValue with empty path', () => {
+    expect(getPathValue({}, '')).toBeUndefined();
   });
 
   //TODO: This passes when run by itself!
@@ -114,9 +148,19 @@ describe('path-next', () => {
     expect(actual).toEqual(['ONE', 'TWO', 'THREE']);
   });
 
-  test('mapPath passing non-function', () => {
+  test('mapPath bad first argument', () => {
+    const msg = 'mapPath first argument must be an object';
+    expect(() => mapPath(false)).toThrow(new Error(msg));
+  });
+
+  test('mapPath bad second argument', () => {
+    const msg = 'mapPath second argument must be a path string';
+    expect(() => mapPath({}, false)).toThrow(new Error(msg));
+  });
+
+  test('mapPath bad third argument', () => {
     const filterFn = 'This is not a function.';
-    const msg = 'mapPath must be passed a function';
+    const msg = 'mapPath third argument must be a function';
     expect(() => mapPath(oldObj, 'some.path', filterFn)).toThrow(
       new Error(msg)
     );
@@ -137,6 +181,16 @@ describe('path-next', () => {
 
     const actual = getPathValue(newObj, path);
     expect(actual).toEqual(['one', 'two', 'three', 'four', 'five']);
+  });
+
+  test('pushPath bad first argument', () => {
+    const msg = 'pushPath first argument must be an object';
+    expect(() => pushPath(false)).toThrow(new Error(msg));
+  });
+
+  test('pushPath bad second argument', () => {
+    const msg = 'pushPath second argument must be a path string';
+    expect(() => pushPath({}, false)).toThrow(new Error(msg));
   });
 
   test('pushPath with path to non-array', () => {
@@ -175,6 +229,16 @@ describe('path-next', () => {
     expect(newObj.foo.bar.baz).toBe(value);
   });
 
+  test('setPath bad first argument', () => {
+    const msg = 'setPath first argument must be an object';
+    expect(() => setPath(false)).toThrow(new Error(msg));
+  });
+
+  test('setPath bad second argument', () => {
+    const msg = 'setPath second argument must be a path string';
+    expect(() => setPath({}, false)).toThrow(new Error(msg));
+  });
+
   test('transformPath', () => {
     const path = 'bar.baz';
     const initialValue = getPathValue(oldObj, path);
@@ -183,9 +247,19 @@ describe('path-next', () => {
     expect(newValue).toEqual(initialValue + 1);
   });
 
-  test('transformPath passing non-function', () => {
+  test('transformPath bad first argument', () => {
+    const msg = 'transformPath first argument must be an object';
+    expect(() => transformPath(false)).toThrow(new Error(msg));
+  });
+
+  test('transformPath bad second argument', () => {
+    const msg = 'transformPath second argument must be a path string';
+    expect(() => transformPath({}, false)).toThrow(new Error(msg));
+  });
+
+  test('transformPath bad third argument', () => {
     const filterFn = 'This is not a function.';
-    const msg = 'transformPath must be passed a function';
+    const msg = 'transformPath third argument must be a function';
     expect(() => transformPath(oldObj, 'some.path', filterFn)).toThrow(
       new Error(msg)
     );

@@ -1,6 +1,10 @@
 const PATH_DELIMITER = '.';
 
 export function deepFreeze(obj, freezing = []) {
+  if (typeof obj !== 'object') {
+    throw new Error('deepFreeze first argument must be an object');
+  }
+
   if (Object.isFrozen(obj) || freezing.includes(obj)) return;
 
   freezing.push(obj);
@@ -17,6 +21,14 @@ export function deepFreeze(obj, freezing = []) {
 }
 
 export function deletePath(oldObj, path) {
+  if (typeof oldObj !== 'object') {
+    throw new Error('deletePath first argument must be an object');
+  }
+
+  if (typeof path !== 'string') {
+    throw new Error('deletePath second argument must be a path string');
+  }
+
   const parts = path.split(PATH_DELIMITER);
   const lastPart = parts.pop();
   const newObj = {...obj};
@@ -35,8 +47,16 @@ export function deletePath(oldObj, path) {
 }
 
 export function filterPath(oldObj, path, filterFn) {
+  if (typeof oldObj !== 'object') {
+    throw new Error('filterPath first argument must be an object');
+  }
+
+  if (typeof path !== 'string') {
+    throw new Error('filterPath second argument must be a path string');
+  }
+
   if (typeof filterFn !== 'function') {
-    throw new Error('filterPath must be passed a function');
+    throw new Error('filterPath third argument must be a function');
   }
 
   const parts = path.split(PATH_DELIMITER);
@@ -62,6 +82,14 @@ export function filterPath(oldObj, path, filterFn) {
 }
 
 export function getPathValue(obj, path) {
+  if (typeof obj !== 'object') {
+    throw new Error('getPathValue first argument must be an object');
+  }
+
+  if (typeof path !== 'string') {
+    throw new Error('getPathValue second argument must be a path string');
+  }
+
   if (!path) return undefined;
 
   let value = obj;
@@ -74,8 +102,16 @@ export function getPathValue(obj, path) {
 }
 
 export function mapPath(oldObj, path, mapFn) {
+  if (typeof oldObj !== 'object') {
+    throw new Error('mapPath first argument must be an object');
+  }
+
+  if (typeof path !== 'string') {
+    throw new Error('mapPath second argument must be a path string');
+  }
+
   if (typeof mapFn !== 'function') {
-    throw new Error('mapPath must be passed a function');
+    throw new Error('mapPath third argument must be a function');
   }
 
   const parts = path.split(PATH_DELIMITER);
@@ -101,6 +137,14 @@ export function mapPath(oldObj, path, mapFn) {
 }
 
 export function pushPath(oldObj, path, ...values) {
+  if (typeof oldObj !== 'object') {
+    throw new Error('pushPath first argument must be an object');
+  }
+
+  if (typeof path !== 'string') {
+    throw new Error('pushPath second argument must be a path string');
+  }
+
   const parts = path.split(PATH_DELIMITER);
   const lastPart = parts.pop();
   const newObj = {...oldObj};
@@ -124,6 +168,14 @@ export function pushPath(oldObj, path, ...values) {
 }
 
 export function setPath(oldObj, path, value) {
+  if (typeof oldObj !== 'object') {
+    throw new Error('setPath first argument must be an object');
+  }
+
+  if (typeof path !== 'string') {
+    throw new Error('setPath second argument must be a path string');
+  }
+
   const parts = path.split(PATH_DELIMITER);
   const lastPart = parts.pop();
   const newObj = {...oldObj};
@@ -142,8 +194,16 @@ export function setPath(oldObj, path, value) {
 }
 
 export function transformPath(oldObj, path, transformFn) {
+  if (typeof oldObj !== 'object') {
+    throw new Error('transformPath first argument must be an object');
+  }
+
+  if (typeof path !== 'string') {
+    throw new Error('transformPath second argument must be a path string');
+  }
+
   if (typeof transformFn !== 'function') {
-    throw new Error('transformPath must be passed a function');
+    throw new Error('transformPath third argument must be a function');
   }
 
   const parts = path.split(PATH_DELIMITER);
