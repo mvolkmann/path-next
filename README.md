@@ -7,7 +7,41 @@ The original object is not modified.
 Modified parts of the object tree are cloned.
 Other parts are shared between old and new objects.
 
-The functions provided are described below.
+While this library is not specific to React,
+it is particularly useful in React because there are many cases
+where the functions provided here can simplify the code.
+
+For example, suppose `setState` is being used to increment the score in a game
+that is at the state path `user.game.score`.
+Without using this library one might write code like the following:
+
+```js
+this.setState(state => {
+  const {user} = state;
+  const {game} = user;
+  const {score} = game;
+  return {
+    ...state,
+    user: {
+      ...user,
+      game: {
+        ...game,
+        score: score + 1
+      }
+    }
+  };
+});
+```
+
+Using this library the code above can be simplified to the following:
+
+```js
+this.setState(state =>
+  transformPath(state, 'user.game.score', score => score + 1)
+);
+```
+
+The functions provided are described below in alphabetical order.
 
 ## deepFreeze
 
