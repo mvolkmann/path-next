@@ -83,11 +83,11 @@ export function filterPath(oldObj, path, filterFn) {
 
 export function getPath(obj, path) {
   if (typeof obj !== 'object') {
-    throw new Error('getPathValue first argument must be an object');
+    throw new Error('getPath first argument must be an object');
   }
 
   if (typeof path !== 'string') {
-    throw new Error('getPathValue second argument must be a path string');
+    throw new Error('getPath second argument must be a path string');
   }
 
   if (!path) return undefined;
