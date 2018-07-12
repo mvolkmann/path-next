@@ -43,12 +43,12 @@ const newPerson = filterPath(
 );
 ```
 
-## getPathValue
+## getPath
 
 This retrieves the value of a property at a given path.
 
 ```js
-const colors = getPathValue(person, 'favorites.colors');
+const colors = getPath(person, 'favorites.colors');
 ```
 
 ## mapPath
