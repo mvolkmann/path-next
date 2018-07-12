@@ -2,7 +2,7 @@ import {
   deepFreeze,
   deletePath,
   filterPath,
-  getPathValue,
+  getPath,
   mapPath,
   pushPath,
   setPath,
@@ -54,7 +54,7 @@ describe('path-next', () => {
   test('deletePath', () => {
     const path = 'bar.baz';
     const newObj = deletePath(oldObj, path);
-    const actual = getPathValue(newObj, path);
+    const actual = getPath(newObj, path);
     expect(actual).toBeUndefined();
   });
 
@@ -75,7 +75,7 @@ describe('path-next', () => {
     const filterFn = element => !/t/.test(element);
     const newObj = filterPath(oldObj, path, filterFn);
 
-    const actual = getPathValue(newObj, path);
+    const actual = getPath(newObj, path);
     expect(actual).toEqual(['one']);
   });
 
@@ -106,34 +106,34 @@ describe('path-next', () => {
 
   test('getPathValue', () => {
     let path = 'nothing.found.here';
-    let actual = getPathValue(oldObj, path);
+    let actual = getPath(oldObj, path);
     expect(actual).toBeUndefined();
 
     path = 'top';
     let value = 7;
     let newObj = setPath(oldObj, path, value);
-    actual = getPathValue(newObj, 'top');
+    actual = getPath(newObj, 'top');
     expect(actual).toBe(7);
 
     path = 'foo.bar.baz';
     value = 'some value';
     newObj = setPath(oldObj, path, value);
-    actual = getPathValue(newObj, path);
+    actual = getPath(newObj, path);
     expect(actual).toBe(value);
   });
 
   test('getPathValue bad first argument', () => {
     const msg = 'getPathValue first argument must be an object';
-    expect(() => getPathValue(false)).toThrow(new Error(msg));
+    expect(() => getPath(false)).toThrow(new Error(msg));
   });
 
   test('getPathValue bad second argument', () => {
     const msg = 'getPathValue second argument must be a path string';
-    expect(() => getPathValue({}, false)).toThrow(new Error(msg));
+    expect(() => getPath({}, false)).toThrow(new Error(msg));
   });
 
   test('getPathValue with empty path', () => {
-    expect(getPathValue({}, '')).toBeUndefined();
+    expect(getPath({}, '')).toBeUndefined();
   });
 
   //TODO: This passes when run by itself!
@@ -144,7 +144,7 @@ describe('path-next', () => {
     const mapFn = element => element.toUpperCase();
     const newObj = mapPath(oldObj, path, mapFn);
 
-    const actual = getPathValue(newObj, path);
+    const actual = getPath(newObj, path);
     expect(actual).toEqual(['ONE', 'TWO', 'THREE']);
   });
 
@@ -179,7 +179,7 @@ describe('path-next', () => {
     // remove all elements that contain the letter "t".
     const newObj = pushPath(oldObj, path, 'four', 'five');
 
-    const actual = getPathValue(newObj, path);
+    const actual = getPath(newObj, path);
     expect(actual).toEqual(['one', 'two', 'three', 'four', 'five']);
   });
 
@@ -205,7 +205,7 @@ describe('path-next', () => {
     const path = 'some.deep.path';
     const value = 'some value';
     const newObj = setPath(oldObj, path, value);
-    const actual = getPathValue(newObj, path);
+    const actual = getPath(newObj, path);
     expect(actual).toBe(value);
   });
 
@@ -241,9 +241,9 @@ describe('path-next', () => {
 
   test('transformPath', () => {
     const path = 'bar.baz';
-    const initialValue = getPathValue(oldObj, path);
+    const initialValue = getPath(oldObj, path);
     const newObj = transformPath(oldObj, path, v => v + 1);
-    const newValue = getPathValue(newObj, path);
+    const newValue = getPath(newObj, path);
     expect(newValue).toEqual(initialValue + 1);
   });
 

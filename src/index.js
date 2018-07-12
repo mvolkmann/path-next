@@ -81,7 +81,7 @@ export function filterPath(oldObj, path, filterFn) {
   return newObj;
 }
 
-export function getPathValue(obj, path) {
+export function getPath(obj, path) {
   if (typeof obj !== 'object') {
     throw new Error('getPathValue first argument must be an object');
   }
