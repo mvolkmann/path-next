@@ -10,18 +10,14 @@ import {
 } from './index';
 
 describe('path-next', () => {
-  let oldObj;
-
-  // Mocks sessionStorage.
-  beforeEach(() => {
-    oldObj = {
-      foo: 1,
-      bar: {
-        baz: 2,
-        qux: ['one', 'two', 'three']
-      }
-    };
-  });
+  const oldObj = {
+    foo: 1,
+    bar: {
+      baz: 2,
+      qux: ['one', 'two', 'three']
+    }
+  };
+  deepFreeze(oldObj);
 
   test('deepFreeze simple', () => {
     const obj = {foo: 1, bar: true};
@@ -81,6 +77,13 @@ describe('path-next', () => {
 
     const actual = getPath(newObj, path);
     expect(actual).toEqual(['one']);
+    expect(newObj).toEqual({
+      foo: 1,
+      bar: {
+        baz: 2,
+        qux: ['one']
+      }
+    });
   });
 
   test('filterPath bad first argument', () => {
@@ -150,6 +153,13 @@ describe('path-next', () => {
 
     const actual = getPath(newObj, path);
     expect(actual).toEqual(['ONE', 'TWO', 'THREE']);
+    expect(newObj).toEqual({
+      foo: 1,
+      bar: {
+        baz: 2,
+        qux: ['ONE', 'TWO', 'THREE']
+      }
+    });
   });
 
   test('mapPath bad first argument', () => {
@@ -185,6 +195,13 @@ describe('path-next', () => {
 
     const actual = getPath(newObj, path);
     expect(actual).toEqual(['one', 'two', 'three', 'four', 'five']);
+    expect(newObj).toEqual({
+      foo: 1,
+      bar: {
+        baz: 2,
+        qux: ['one', 'two', 'three', 'four', 'five']
+      }
+    });
   });
 
   test('pushPath bad first argument', () => {
@@ -227,10 +244,16 @@ describe('path-next', () => {
     const path = 'foo.bar.baz';
     const value = 2;
     const newObj = setPath(oldObj, path, value);
-    expect(newObj.c1).toBe(1);
-    expect(newObj.foo.c2).toBe(2);
-    expect(newObj.foo.bar.c3).toBe(3);
-    expect(newObj.foo.bar.baz).toBe(value);
+    expect(newObj).toEqual({
+      foo: {
+        bar: {
+          baz: 2,
+          c3: 3
+        },
+        c2: 2
+      },
+      c1: 1
+    });
   });
 
   test('setPath bad first argument', () => {
@@ -249,6 +272,13 @@ describe('path-next', () => {
     const newObj = transformPath(oldObj, path, v => v + 1);
     const newValue = getPath(newObj, path);
     expect(newValue).toEqual(initialValue + 1);
+    expect(newObj).toEqual({
+      foo: 1,
+      bar: {
+        baz: initialValue + 1,
+        qux: ['one', 'two', 'three']
+      }
+    });
   });
 
   test('transformPath bad first argument', () => {
