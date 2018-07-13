@@ -9,20 +9,18 @@ import {
   transformPath
 } from './index';
 
-const TEST_OBJECT = {
-  foo: 1,
-  bar: {
-    baz: 2,
-    qux: ['one', 'two', 'three']
-  }
-};
-
 describe('path-next', () => {
   let oldObj;
 
   // Mocks sessionStorage.
   beforeEach(() => {
-    oldObj = TEST_OBJECT;
+    oldObj = {
+      foo: 1,
+      bar: {
+        baz: 2,
+        qux: ['one', 'two', 'three']
+      }
+    };
   });
 
   test('deepFreeze simple', () => {
@@ -56,6 +54,12 @@ describe('path-next', () => {
     const newObj = deletePath(oldObj, path);
     const actual = getPath(newObj, path);
     expect(actual).toBeUndefined();
+    expect(newObj).toEqual({
+      foo: 1,
+      bar: {
+        qux: ['one', 'two', 'three']
+      }
+    });
   });
 
   test('deletePath bad first argument', () => {
@@ -104,7 +108,7 @@ describe('path-next', () => {
     expect(() => filterPath(oldObj, path, filterFn)).toThrow(new Error(msg));
   });
 
-  test('getPathValue', () => {
+  test('getPath', () => {
     let path = 'nothing.found.here';
     let actual = getPath(oldObj, path);
     expect(actual).toBeUndefined();
@@ -122,17 +126,17 @@ describe('path-next', () => {
     expect(actual).toBe(value);
   });
 
-  test('getPathValue bad first argument', () => {
-    const msg = 'getPathValue first argument must be an object';
+  test('getPath bad first argument', () => {
+    const msg = 'getPath first argument must be an object';
     expect(() => getPath(false)).toThrow(new Error(msg));
   });
 
-  test('getPathValue bad second argument', () => {
-    const msg = 'getPathValue second argument must be a path string';
+  test('getPath bad second argument', () => {
+    const msg = 'getPath second argument must be a path string';
     expect(() => getPath({}, false)).toThrow(new Error(msg));
   });
 
-  test('getPathValue with empty path', () => {
+  test('getPath with empty path', () => {
     expect(getPath({}, '')).toBeUndefined();
   });
 

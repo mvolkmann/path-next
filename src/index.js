@@ -31,7 +31,7 @@ export function deletePath(oldObj, path) {
 
   const parts = path.split(PATH_DELIMITER);
   const lastPart = parts.pop();
-  const newObj = {...obj};
+  const newObj = {...oldObj};
 
   let obj = newObj;
   for (const part of parts) {
