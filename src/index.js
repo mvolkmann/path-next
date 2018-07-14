@@ -21,6 +21,22 @@ function checkArgs(name, ...args) {
   args.forEach((arg, i) => fnArgs[i](name, arg));
 }
 
+function mutatePath(oldObj, path, fn) {
+  const parts = path.split(PATH_DELIMITER);
+  const lastPart = parts.pop();
+  const newObj = {...oldObj};
+
+  let obj = newObj;
+  for (const part of parts) {
+    const v = obj[part];
+    const newV = {...v};
+    obj[part] = newV;
+    obj = newV;
+  }
+  fn(obj, lastPart);
+  return newObj;
+}
+
 export function deepFreeze(obj, freezing = []) {
   checkArgs('deepFreeze', obj);
   if (Object.isFrozen(obj) || freezing.includes(obj)) return;
@@ -40,47 +56,18 @@ export function deepFreeze(obj, freezing = []) {
 
 export function deletePath(oldObj, path) {
   checkArgs('deletePath', oldObj, path);
-
-  const parts = path.split(PATH_DELIMITER);
-  const lastPart = parts.pop();
-  const newObj = {...oldObj};
-
-  let obj = newObj;
-  for (const part of parts) {
-    const v = obj[part];
-    const newV = {...v};
-    obj[part] = newV;
-    obj = newV;
-  }
-
-  delete obj[lastPart];
-
-  return newObj;
+  return mutatePath(oldObj, path, (obj, lastPart) => delete obj[lastPart]);
 }
 
 export function filterPath(oldObj, path, filterFn) {
   checkArgs('filterPath', oldObj, path, filterFn);
-
-  const parts = path.split(PATH_DELIMITER);
-  const lastPart = parts.pop();
-  const newObj = {...oldObj};
-
-  let obj = newObj;
-  for (const part of parts) {
-    const v = obj[part];
-    const newV = {...v};
-    obj[part] = newV;
-    obj = newV;
-  }
-
-  const currentValue = obj[lastPart];
-  if (!Array.isArray(currentValue)) {
-    throw new Error(`filterPath can only be used on arrays and ${path} is not`);
-  }
-
-  obj[lastPart] = currentValue.filter(filterFn);
-
-  return newObj;
+  return mutatePath(oldObj, path, (obj, lastPart) => {
+    const currentValue = obj[lastPart];
+    if (!Array.isArray(currentValue)) {
+      throw new Error(`filterPath can only be used on arrays and ${path} is not`);
+    }
+    obj[lastPart] = currentValue.filter(filterFn);
+  });
 }
 
 export function getPath(obj, path) {
@@ -99,91 +86,34 @@ export function getPath(obj, path) {
 
 export function mapPath(oldObj, path, mapFn) {
   checkArgs('mapPath', oldObj, path, mapFn);
-
-  const parts = path.split(PATH_DELIMITER);
-  const lastPart = parts.pop();
-  const newObj = {...oldObj};
-
-  let obj = newObj;
-  for (const part of parts) {
-    const v = obj[part];
-    const newV = {...v};
-    obj[part] = newV;
-    obj = newV;
-  }
-
-  const currentValue = obj[lastPart];
-  if (!Array.isArray(currentValue)) {
-    throw new Error(`mapPath can only be used on arrays and ${path} is not`);
-  }
-
-  obj[lastPart] = currentValue.map(mapFn);
-
-  return newObj;
+  return mutatePath(oldObj, path, (obj, lastPart) => {
+    const currentValue = obj[lastPart];
+    if (!Array.isArray(currentValue)) {
+      throw new Error(`mapPath can only be used on arrays and ${path} is not`);
+    }
+    obj[lastPart] = currentValue.map(mapFn);
+  });
 }
 
 export function pushPath(oldObj, path, ...values) {
   checkArgs('pushPath', oldObj, path);
-
-  const parts = path.split(PATH_DELIMITER);
-  const lastPart = parts.pop();
-  const newObj = {...oldObj};
-
-  let obj = newObj;
-  for (const part of parts) {
-    const v = obj[part];
-    const newV = {...v};
-    obj[part] = newV;
-    obj = newV;
-  }
-
-  const currentValue = obj[lastPart];
-  if (!Array.isArray(currentValue)) {
-    throw new Error(`pushPath can only be used on arrays and ${path} is not`);
-  }
-
-  obj[lastPart] = [...currentValue, ...values];
-
-  return newObj;
+  return mutatePath(oldObj, path, (obj, lastPart) => {
+    const currentValue = obj[lastPart];
+    if (!Array.isArray(currentValue)) {
+      throw new Error(`pushPath can only be used on arrays and ${path} is not`);
+    }
+    obj[lastPart] = [...currentValue, ...values];
+  });
 }
 
 export function setPath(oldObj, path, value) {
   checkArgs('setPath', oldObj, path);
-
-  const parts = path.split(PATH_DELIMITER);
-  const lastPart = parts.pop();
-  const newObj = {...oldObj};
-
-  let obj = newObj;
-  for (const part of parts) {
-    const v = obj[part];
-    const newV = {...v};
-    obj[part] = newV;
-    obj = newV;
-  }
-
-  obj[lastPart] = value;
-
-  return newObj;
+  return mutatePath(oldObj, path, (obj, lastPart) => obj[lastPart] = value);
 }
 
 export function transformPath(oldObj, path, transformFn) {
   checkArgs('transformPath', oldObj, path, transformFn);
-
-  const parts = path.split(PATH_DELIMITER);
-  const lastPart = parts.pop();
-  const newObj = {...oldObj};
-
-  let obj = newObj;
-  for (const part of parts) {
-    const v = obj[part];
-    const newV = {...v};
-    obj[part] = newV;
-    obj = newV;
-  }
-
-  const currentValue = obj[lastPart];
-  obj[lastPart] = transformFn(currentValue);
-
-  return newObj;
+  return mutatePath(oldObj, path, (obj, lastPart) => {
+    obj[lastPart] = transformFn(obj[lastPart]);
+  });
 }
