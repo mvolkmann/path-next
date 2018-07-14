@@ -1,10 +1,44 @@
 const PATH_DELIMITER = '.';
+const fnArgs = [
+  (name, arg) => {
+    if (typeof arg !== 'object') {
+      throw new Error(`${name} first argument must be an object`);
+    }
+  },
+  (name, arg) => {
+    if (typeof arg !== 'string') {
+      throw new Error(`${name} second argument must be a path string`);
+    }
+  },
+  (name, arg) => {
+    if (typeof arg !== 'function') {
+      throw new Error(`${name} third argument must be a function`);
+    }
+  },
+];
+
+function checkArgs(name, ...args) {
+  args.forEach((arg, i) => fnArgs[i](name, arg));
+}
+
+function mutatePath(oldObj, path, fn) {
+  const parts = path.split(PATH_DELIMITER);
+  const lastPart = parts.pop();
+  const newObj = {...oldObj};
+
+  let obj = newObj;
+  for (const part of parts) {
+    const v = obj[part];
+    const newV = {...v};
+    obj[part] = newV;
+    obj = newV;
+  }
+  fn(obj, lastPart);
+  return newObj;
+}
 
 export function deepFreeze(obj, freezing = []) {
-  if (typeof obj !== 'object') {
-    throw new Error('deepFreeze first argument must be an object');
-  }
-
+  checkArgs('deepFreeze', obj);
   if (Object.isFrozen(obj) || freezing.includes(obj)) return;
 
   freezing.push(obj);
@@ -21,74 +55,23 @@ export function deepFreeze(obj, freezing = []) {
 }
 
 export function deletePath(oldObj, path) {
-  if (typeof oldObj !== 'object') {
-    throw new Error('deletePath first argument must be an object');
-  }
-
-  if (typeof path !== 'string') {
-    throw new Error('deletePath second argument must be a path string');
-  }
-
-  const parts = path.split(PATH_DELIMITER);
-  const lastPart = parts.pop();
-  const newObj = {...oldObj};
-
-  let obj = newObj;
-  for (const part of parts) {
-    const v = obj[part];
-    const newV = {...v};
-    obj[part] = newV;
-    obj = newV;
-  }
-
-  delete obj[lastPart];
-
-  return newObj;
+  checkArgs('deletePath', oldObj, path);
+  return mutatePath(oldObj, path, (obj, lastPart) => delete obj[lastPart]);
 }
 
 export function filterPath(oldObj, path, filterFn) {
-  if (typeof oldObj !== 'object') {
-    throw new Error('filterPath first argument must be an object');
-  }
-
-  if (typeof path !== 'string') {
-    throw new Error('filterPath second argument must be a path string');
-  }
-
-  if (typeof filterFn !== 'function') {
-    throw new Error('filterPath third argument must be a function');
-  }
-
-  const parts = path.split(PATH_DELIMITER);
-  const lastPart = parts.pop();
-  const newObj = {...oldObj};
-
-  let obj = newObj;
-  for (const part of parts) {
-    const v = obj[part];
-    const newV = {...v};
-    obj[part] = newV;
-    obj = newV;
-  }
-
-  const currentValue = obj[lastPart];
-  if (!Array.isArray(currentValue)) {
-    throw new Error(`filterPath can only be used on arrays and ${path} is not`);
-  }
-
-  obj[lastPart] = currentValue.filter(filterFn);
-
-  return newObj;
+  checkArgs('filterPath', oldObj, path, filterFn);
+  return mutatePath(oldObj, path, (obj, lastPart) => {
+    const currentValue = obj[lastPart];
+    if (!Array.isArray(currentValue)) {
+      throw new Error(`filterPath can only be used on arrays and ${path} is not`);
+    }
+    obj[lastPart] = currentValue.filter(filterFn);
+  });
 }
 
 export function getPath(obj, path) {
-  if (typeof obj !== 'object') {
-    throw new Error('getPath first argument must be an object');
-  }
-
-  if (typeof path !== 'string') {
-    throw new Error('getPath second argument must be a path string');
-  }
+  checkArgs('getPath', obj, path);
 
   if (!path) return undefined;
 
@@ -102,124 +85,35 @@ export function getPath(obj, path) {
 }
 
 export function mapPath(oldObj, path, mapFn) {
-  if (typeof oldObj !== 'object') {
-    throw new Error('mapPath first argument must be an object');
-  }
-
-  if (typeof path !== 'string') {
-    throw new Error('mapPath second argument must be a path string');
-  }
-
-  if (typeof mapFn !== 'function') {
-    throw new Error('mapPath third argument must be a function');
-  }
-
-  const parts = path.split(PATH_DELIMITER);
-  const lastPart = parts.pop();
-  const newObj = {...oldObj};
-
-  let obj = newObj;
-  for (const part of parts) {
-    const v = obj[part];
-    const newV = {...v};
-    obj[part] = newV;
-    obj = newV;
-  }
-
-  const currentValue = obj[lastPart];
-  if (!Array.isArray(currentValue)) {
-    throw new Error(`mapPath can only be used on arrays and ${path} is not`);
-  }
-
-  obj[lastPart] = currentValue.map(mapFn);
-
-  return newObj;
+  checkArgs('mapPath', oldObj, path, mapFn);
+  return mutatePath(oldObj, path, (obj, lastPart) => {
+    const currentValue = obj[lastPart];
+    if (!Array.isArray(currentValue)) {
+      throw new Error(`mapPath can only be used on arrays and ${path} is not`);
+    }
+    obj[lastPart] = currentValue.map(mapFn);
+  });
 }
 
 export function pushPath(oldObj, path, ...values) {
-  if (typeof oldObj !== 'object') {
-    throw new Error('pushPath first argument must be an object');
-  }
-
-  if (typeof path !== 'string') {
-    throw new Error('pushPath second argument must be a path string');
-  }
-
-  const parts = path.split(PATH_DELIMITER);
-  const lastPart = parts.pop();
-  const newObj = {...oldObj};
-
-  let obj = newObj;
-  for (const part of parts) {
-    const v = obj[part];
-    const newV = {...v};
-    obj[part] = newV;
-    obj = newV;
-  }
-
-  const currentValue = obj[lastPart];
-  if (!Array.isArray(currentValue)) {
-    throw new Error(`pushPath can only be used on arrays and ${path} is not`);
-  }
-
-  obj[lastPart] = [...currentValue, ...values];
-
-  return newObj;
+  checkArgs('pushPath', oldObj, path);
+  return mutatePath(oldObj, path, (obj, lastPart) => {
+    const currentValue = obj[lastPart];
+    if (!Array.isArray(currentValue)) {
+      throw new Error(`pushPath can only be used on arrays and ${path} is not`);
+    }
+    obj[lastPart] = [...currentValue, ...values];
+  });
 }
 
 export function setPath(oldObj, path, value) {
-  if (typeof oldObj !== 'object') {
-    throw new Error('setPath first argument must be an object');
-  }
-
-  if (typeof path !== 'string') {
-    throw new Error('setPath second argument must be a path string');
-  }
-
-  const parts = path.split(PATH_DELIMITER);
-  const lastPart = parts.pop();
-  const newObj = {...oldObj};
-
-  let obj = newObj;
-  for (const part of parts) {
-    const v = obj[part];
-    const newV = {...v};
-    obj[part] = newV;
-    obj = newV;
-  }
-
-  obj[lastPart] = value;
-
-  return newObj;
+  checkArgs('setPath', oldObj, path);
+  return mutatePath(oldObj, path, (obj, lastPart) => obj[lastPart] = value);
 }
 
 export function transformPath(oldObj, path, transformFn) {
-  if (typeof oldObj !== 'object') {
-    throw new Error('transformPath first argument must be an object');
-  }
-
-  if (typeof path !== 'string') {
-    throw new Error('transformPath second argument must be a path string');
-  }
-
-  if (typeof transformFn !== 'function') {
-    throw new Error('transformPath third argument must be a function');
-  }
-
-  const parts = path.split(PATH_DELIMITER);
-  const lastPart = parts.pop();
-  const newObj = {...oldObj};
-
-  let obj = newObj;
-  for (const part of parts) {
-    const v = obj[part];
-    const newV = {...v};
-    obj[part] = newV;
-    obj = newV;
-  }
-
-  const currentValue = obj[lastPart];
-  obj[lastPart] = transformFn(currentValue);
-
-  return newObj;
+  checkArgs('transformPath', oldObj, path, transformFn);
+  return mutatePath(oldObj, path, (obj, lastPart) => {
+    obj[lastPart] = transformFn(obj[lastPart]);
+  });
 }
