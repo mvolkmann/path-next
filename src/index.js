@@ -18,17 +18,17 @@ function mutatePath(oldObj, path, fn) {
 }
 
 function transform(oldObj, path, fn) {
-  return mutatePath(oldObj, path, (obj, key) => obj[key] = fn(obj[key]));
+  return mutatePath(oldObj, path, (obj, key) => (obj[key] = fn(obj[key])));
 }
 
-function validateArgs(name, obj, path, fn) {
-  if (typeof obj !== 'object') {
+function validateArgs(name, ...args) {
+  if (typeof args[0] !== 'object') {
     throw new Error(`${name} first argument must be an object`);
   }
-  if (path !== undefined && typeof path !== 'string') {
+  if (args.length >= 2 && typeof args[1] !== 'string') {
     throw new Error(`${name} second argument must be a path string`);
   }
-  if (fn && typeof fn !== 'function') {
+  if (args.length >= 3 && typeof args[2] !== 'function') {
     throw new Error(`${name} third argument must be a function`);
   }
 }

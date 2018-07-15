@@ -113,9 +113,7 @@ describe('path-next', () => {
 
   test('filterPath without filter function', () => {
     const msg = 'filterPath third argument must be a function';
-    expect(() => filterPath(oldObj, 'bar.qux')).toThrow(
-      new Error(msg)
-    );
+    expect(() => filterPath(oldObj, 'bar.qux')).toThrow(new Error(msg));
   });
 
   test('getPath', () => {
@@ -150,7 +148,6 @@ describe('path-next', () => {
     expect(getPath({}, '')).toBeUndefined();
   });
 
-  //TODO: This passes when run by itself!
   test('mapPath', () => {
     const path = 'bar.qux';
 
