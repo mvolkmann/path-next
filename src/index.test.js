@@ -111,6 +111,13 @@ describe('path-next', () => {
     expect(() => filterPath(oldObj, path, filterFn)).toThrow(new Error(msg));
   });
 
+  test('filterPath without filter function', () => {
+    const msg = 'filterPath third argument must be a function';
+    expect(() => filterPath(oldObj, 'bar.qux')).toThrow(
+      new Error(msg)
+    );
+  });
+
   test('getPath', () => {
     let path = 'nothing.found.here';
     let actual = getPath(oldObj, path);
