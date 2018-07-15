@@ -17,6 +17,10 @@ function mutatePath(oldObj, path, fn) {
   return newObj;
 }
 
+function transform(oldObj, path, fn) {
+  return mutatePath(oldObj, path, (obj, key) => obj[key] = fn(obj[key]));
+}
+
 function validateArgs(name, obj, path, fn) {
   if (typeof obj !== 'object') {
     throw new Error(`${name} first argument must be an object`);
@@ -58,7 +62,7 @@ export function deletePath(oldObj, path) {
 
 export function filterPath(oldObj, path, filterFn) {
   validateArgs('filterPath', oldObj, path, filterFn);
-  return transformPath(oldObj, path, currentValue => {
+  return transform(oldObj, path, currentValue => {
     validateArray('filterPath', path, currentValue);
     return currentValue.filter(filterFn);
   });
@@ -79,7 +83,7 @@ export function getPath(obj, path) {
 
 export function mapPath(oldObj, path, mapFn) {
   validateArgs('mapPath', oldObj, path, mapFn);
-  return transformPath(oldObj, path, currentValue => {
+  return transform(oldObj, path, currentValue => {
     validateArray('mapPath', path, currentValue);
     return currentValue.map(mapFn);
   });
@@ -87,7 +91,7 @@ export function mapPath(oldObj, path, mapFn) {
 
 export function pushPath(oldObj, path, ...values) {
   validateArgs('pushPath', oldObj, path);
-  return transformPath(oldObj, path, currentValue => {
+  return transform(oldObj, path, currentValue => {
     validateArray('pushPath', path, currentValue);
     return [...currentValue, ...values];
   });
@@ -95,12 +99,10 @@ export function pushPath(oldObj, path, ...values) {
 
 export function setPath(oldObj, path, value) {
   validateArgs('setPath', oldObj, path);
-  return transformPath(oldObj, path, () => value);
+  return transform(oldObj, path, () => value);
 }
 
 export function transformPath(oldObj, path, transformFn) {
   validateArgs('transformPath', oldObj, path, transformFn);
-  return mutatePath(oldObj, path, (obj, lastPart) => {
-    obj[lastPart] = transformFn(obj[lastPart]);
-  });
+  return transform(oldObj, path, transformFn);
 }
